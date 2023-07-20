@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="|${pageName}|"></title>
+</head>
+<body>
+<div style="text-align: center; padding-top: 20px;">
+  <h1><a href="#">스마트 팩토리 관제 시스템</a></h1>
+  <hr style="width: 80%; height: 2px; background-color: #007bff; border: none; margin: 15px auto;">
+</div>
+<div class="container mt-5">
+  <div class="custom-form">
+    <h2 class="text-center mb-4">유저 정보</h2>
+    <div>
+      <div class="user-info">
+        <span>Login ID:</span> <span th:text="${user.loginId}"></span>
+      </div>
+      <div class="user-info">
+        <span>Nickname:</span> <span th:text="${user.nickname}"></span>
+      </div>
+      <div class="user-info">
+        <span>Role:</span> <span th:text="${user.role}"></span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<style>
+  /* 커스텀 CSS 스타일 */
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .custom-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+</style>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|${pageName}|"></title>
+</head>
+<body>
+<div style="text-align: center; padding-top: 20px;">
+    <h1><a href="#">스마트 팩토리 관제 시스템</a></h1>
+    <hr style="width: 80%; height: 2px; background-color: #007bff; border: none; margin: 15px auto;">
+</div>
+<div class="container mt-5">
+    <div class="custom-form">
+        <h2 class="text-center mb-4">로그인</h2>
+        <form th:method="post" th:action="|@{/{loginType}/login (loginType=${loginType})}|" th:object="${loginRequest}">
+            <div class="form-group">
+                <label class="form-label" th:for="loginId">로그인 아이디 :</label>
+                <input type="text" class="form-control" th:field="*{loginId}" th:errorclass="error-input" placeholder="아이디를 입력하세요">
+            </div>
+            <br/>
+            <div class="form-group">
+                <label class="form-label" th:for="password">비밀번호 :</label>
+                <input type="password" class="form-control" th:field="*{password}" th:errorclass="error-input" placeholder="비밀번호를 입력하세요">
+            </div>
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <br/>
+                <div class="error-class" th:each="error : ${#fields.globalErrors()}" th:text="${error}" />
+            </div>
+            <br/>
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">로그인</button>
+                <button type="button" class="btn btn-secondary" th:onclick="|location.href='@{/{loginType}/join (loginType=${loginType})}'|">회원 가입</button>
+            </div>
+            <br/>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+<style>
+    /* 커스텀 CSS 스타일 */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .custom-form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+        display: inline-block;
+        width: 120px;
+        margin-bottom: 5px;
+    }
+
+    .error-class {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .error-input {
+        border: 1px solid red;
+    }
+</style>

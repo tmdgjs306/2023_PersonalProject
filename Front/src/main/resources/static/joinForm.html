@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트 팩토리 관리 시스템</title>
+    <!-- 부트스트랩 CSS 링크 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 커스텀 CSS 스타일 */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .custom-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="custom-form">
+        <h3 class="text-center mb-4">회원 가입</h3>
+        <form th:method="post" th:action="|@{/{loginType}/join (loginType=${loginType})}|" th:object="${joinRequest}">
+            <div class="form-group">
+                <label class="form-label" th:for="loginId">아이디</label>
+                <input type="text" class="form-control" th:field="*{loginId}" th:errorclass="error-input" placeholder="아이디를 입력하세요"/>
+                <div class="error-class" th:errors="*{loginId}"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" th:for="password">비밀번호</label>
+                <input type="password" class="form-control" th:field="*{password} " th:errorclass="error-input" placeholder="비밀번호를 입력하세요"/>
+                <div class="error-class" th:errors="*{password}"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" th:for="password">비밀번호 체크</label>
+                <input type="password" class="form-control" th:field="*{passwordCheck} " th:errorclass="error-input" placeholder="비밀번호를 한 번 더 입력하세요"/>
+                <div class="error-class" th:errors="*{passwordCheck}"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" th:for="nickname">닉네임</label>
+                <input type="text" class="form-control" th:field="*{nickname} " th:errorclass="error-input" placeholder="비밀번호를 입력하세요"/>
+                <div class="error-class" th:errors="*{nickname}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">로그인</button>
+        </form>
+    </div>
+</div>
+
+<!-- 부트스트랩 JS와 jQuery 링크 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
