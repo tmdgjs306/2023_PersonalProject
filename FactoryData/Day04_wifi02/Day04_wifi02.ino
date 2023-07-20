@@ -1,13 +1,15 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <HTTPClient.h>
 #include <WebServer.h>
 #include <time.h> 
 #include <ArduinoJson.h>
+#include <stdio.h>
 
 //WIFI setting
 const char* ssid = "KEB_INHA"; 
 const char* password = "inha123*"; 
-
+String TempUrl = "http://165.246.80.63:8080/session-login/temp";
 //sensor setting
 int sensor = A2;    
 int Vo;
@@ -134,11 +136,37 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   server.handleClient(); // Client session Receive
-  unsigned long currentMillis = millis();
-  if(currentMillis - previousMillis >= interval){
-    previousMillis = currentMillis;
+  if((WiFi.status()) == WL_CONNECTED){
+    WiFiClient WiFiClient;
+    HTTPClient httpClient; 
 
-    time_t now = time(nullptr);
-    Serial.println(ctime(&now));
+    httpClient.begin(WiFiClient,TempUrl);
+    httpClient.addHeader("Content-Type", "application/json");
+
+    StaticJsonDocument<200> json;
+
+    float temp = getTemp();
+    int count = getCount();
+    json["temp"] = temp;
+    json["count"] = count;
+
+    String paredJsonToString;
+
+    serializeJson(json,paredJsonToString);
+    String tempString = "22222.222";
+    int httpResponseCode = httpClient.POST(paredJsonToString);
+
+    if(httpResponseCode>0){
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+
+      String response = httpClient.getString();
+      Serial.println(response);
+    }else{
+      Serial.print("Error Code: ");
+      Serial.println(httpResponseCode);
+    }
+    httpClient.end();
+    delay(1000);
   }
 }
