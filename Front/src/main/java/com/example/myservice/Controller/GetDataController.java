@@ -1,8 +1,7 @@
 package com.example.myservice.Controller;
 
-import com.example.myservice.DTO.DataRepository;
-import com.example.myservice.DTO.TemperatureDataRequest;
-import com.example.myservice.DTO.UserService;
+import com.example.myservice.DTO.*;
+import com.example.myservice.Data.PhotoData;
 import com.example.myservice.Data.TemperatureData;
 import com.example.myservice.Member.User;
 import lombok.RequiredArgsConstructor;
@@ -24,24 +23,32 @@ import java.util.HashMap;
 @RequestMapping("/session-login")
 public class GetDataController {
 
-    private final DataRepository dataRepository;
-    private int id=1;
+    private final TemperatureDataRepository temperatureDataRepository;
+    private final PhotoDataRepository photoDataRepository;
+
     JSONParser parser = new JSONParser();
-    @PostMapping("/temp")
+    @PostMapping("/addData")
     public void postTemp(@RequestBody String req) throws ParseException {
         JSONObject jsonObject = (JSONObject) parser.parse(req);
-        Double value = (Double) jsonObject.get("temp");
-        dataRepository.save(new TemperatureDataRequest().toEntity(value));
+        Double tempValue = (Double) jsonObject.get("temp");
+        Long photoValue = (Long) jsonObject.get("photo");
+        temperatureDataRepository.save(new TemperatureDataRequest().toEntity(tempValue));
+        photoDataRepository.save(new PhotoDataRequest().toEntity(photoValue));
     }
     @PostMapping("/count")
     public void postCount(@RequestBody String req) throws ParseException {
         JSONObject jsonObject = (JSONObject) parser.parse(req);
         Double value = (Double) jsonObject.get("temp");
-        dataRepository.save(new TemperatureDataRequest().toEntity(value));
     }
     @GetMapping("/latestTemperatureData")
     public TemperatureData getLatestTemperatureData() {
-        TemperatureData temperatureData = dataRepository.findFirstByIdOrderByIdDesc();
+        TemperatureData temperatureData = temperatureDataRepository.findFirstByIdOrderByIdDesc();
         return temperatureData;
+    }
+
+    @GetMapping("/latestPhotoData")
+    public PhotoData getLatestPhotoData(){
+        PhotoData photoData = photoDataRepository.findFirstByIdOrderByIdDesc();
+        return photoData;
     }
 }

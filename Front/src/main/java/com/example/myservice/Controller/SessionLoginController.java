@@ -1,8 +1,5 @@
 package com.example.myservice.Controller;
-import com.example.myservice.DTO.DataRepository;
-import com.example.myservice.DTO.JoinRequest;
-import com.example.myservice.DTO.LoginRequest;
-import com.example.myservice.DTO.UserService;
+import com.example.myservice.DTO.*;
 import com.example.myservice.Data.TemperatureData;
 import com.example.myservice.Member.User;
 import com.example.myservice.Member.UserRole;
@@ -31,8 +28,8 @@ import java.util.HashMap;
 public class SessionLoginController {
 
     private final UserService userService;
-    private final DataRepository dataRepository;
-    WebClient webClient;
+    private final TemperatureDataRepository temperatureDataRepository;
+    private final PhotoDataRepository photoDataRepository;
     @GetMapping(value = {"", "/"})
     public String home(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         model.addAttribute("loginType", "session-login");
@@ -176,6 +173,8 @@ public class SessionLoginController {
 
         return "mainData";
     }
+
+
     @GetMapping("/ledOn")
     public String ledOn(@SessionAttribute(name = "userId", required = false) Long userId, Model model) throws IOException {
         model.addAttribute("loginType", "session-login");

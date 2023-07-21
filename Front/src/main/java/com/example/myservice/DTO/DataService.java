@@ -10,7 +10,6 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 public class DataService {
-    private final DataRepository dataRepository;
-
-
+    private final TemperatureDataRepository temperatureDataRepository;
+    private final PhotoDataRepository photoDataRepository;
 }

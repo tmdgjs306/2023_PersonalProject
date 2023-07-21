@@ -8,8 +8,11 @@
 
 //WIFI setting
 const char* ssid = "KEB_INHA"; 
-const char* password = "inha123*"; 
-String TempUrl = "http://165.246.80.104:8080/session-login/temp";
+const char* password = "inha123*";
+
+//URL Setting 
+String addDataUrl = "http://165.246.80.104:8080/session-login/addData";
+
 //sensor setting
 int sensor = A2;    
 int Vo;
@@ -23,14 +26,19 @@ int count = 0;
 //Time setting
 int timezone = 3; 
 int dst = 0; 
-unsigned long previousMillis = 0;
-const long interval = 1000; 
 
 //JSON
 char buffer[96];
 
 //led
 const int led = D2;
+
+//photoresistor sensor setting
+int photoresistor = A1;
+
+// 지연 효과 변수 
+unsigned long previousMillis = 0;
+const long interval = 3000; 
 
 //WebServer Setting
 WebServer server(80); // Create WebServer Object, port 
@@ -42,6 +50,7 @@ void printConnectMsg(){
   Serial.println(WiFi.localIP()); //print assigned ip address 
 
 }
+
  //온도 센서의 값을 읽고 온도로 변환
 float getTemp(){
   Vo = analogRead(sensor);
@@ -61,6 +70,11 @@ float tcToTf(float Tc){
 int getCount(){
   return count;
 } 
+
+// 조도 센서 값 측정 
+int getPhotoresistor(){
+  return analogRead(photoresistor);
+}
 
 // IP 주소 XXX 처리 
 String ipAddressConverter(String IpAddress){
@@ -82,6 +96,7 @@ void handleRootEvent() {
 
   server.send(200 , "text/plain", message);   
 }
+
 // getTemp 로 접속했을때 핸들러 
 void getTempJson(){
   float temp = getTemp();
@@ -94,6 +109,7 @@ void getTempJson(){
   server.send(200 , "text/Json",buffer); 
 }
 
+//Count 값을 JSON 형태로 파싱하여 반환 
 void getCountJson(){
   int count = getCount();
   StaticJsonDocument<200> doc;
@@ -105,12 +121,14 @@ void getCountJson(){
   server.send(200 , "text/Json",buffer); 
 }
 
+// RED LED 제어 함수   
 void handleRedledOn(){
   Serial.println("D2 ON Call!!");
   digitalWrite(led,HIGH);
   server.send(200,"text/plain","LED ON!!");
 }
 
+// RED LED 제어 함수 
 void handleRedledOff(){
   Serial.println("D2 OFF Call!!");
   digitalWrite(led, LOW);
@@ -159,24 +177,34 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   server.handleClient(); // Client session Receive
-
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
   if((WiFi.status()) == WL_CONNECTED){
+
+    // 연결 설정 
     WiFiClient WiFiClient;
     HTTPClient httpClient; 
-
-    httpClient.begin(WiFiClient,TempUrl);
+    httpClient.begin(WiFiClient,addDataUrl);
     httpClient.addHeader("Content-Type", "application/json");
 
+    //Json 객체 생성 
     StaticJsonDocument<200> json;
 
+    // 센서 측정값 저장 
     float temp = getTemp();
+    int photoresistor_result = getPhotoresistor();
     int count = getCount();
+
     json["temp"] = temp;
+    json["photo"] = photoresistor_result;
     json["count"] = count;
 
+    // Json 형태로 데이터 저장  
     String parsedJsonToString;
-
     serializeJson(json,parsedJsonToString);
+
+    // 데이터 서버로 전송 
     int httpResponseCode = httpClient.POST(parsedJsonToString);
 
     if(httpResponseCode>0){
@@ -188,8 +216,7 @@ void loop() {
       Serial.print("Error Code: ");
       Serial.println(httpResponseCode);
     }
-
     httpClient.end();
-    delay(1000);
+  }
   }
 }

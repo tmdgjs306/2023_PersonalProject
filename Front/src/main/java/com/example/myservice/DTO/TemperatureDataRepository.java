@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface DataRepository extends JpaRepository<TemperatureData, Long> {
+public interface TemperatureDataRepository extends JpaRepository<TemperatureData, Long> {
     Optional<TemperatureData> findById(Long id);
 
     @Query("SELECT u FROM TemperatureData u WHERE u.id = (SELECT MAX(u2.id) FROM TemperatureData u2)")
     TemperatureData findFirstByIdOrderByIdDesc();
+
 }
