@@ -39,4 +39,9 @@ public class GetDataController {
         Double value = (Double) jsonObject.get("temp");
         dataRepository.save(new TemperatureDataRequest().toEntity(value));
     }
+    @GetMapping("/latestTemperatureData")
+    public TemperatureData getLatestTemperatureData() {
+        TemperatureData temperatureData = dataRepository.findFirstByIdOrderByIdDesc();
+        return temperatureData;
+    }
 }

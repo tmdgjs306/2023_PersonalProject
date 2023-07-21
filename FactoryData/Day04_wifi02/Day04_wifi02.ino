@@ -9,7 +9,7 @@
 //WIFI setting
 const char* ssid = "KEB_INHA"; 
 const char* password = "inha123*"; 
-String TempUrl = "http://165.246.80.63:8080/session-login/temp";
+String TempUrl = "http://165.246.80.104:8080/session-login/temp";
 //sensor setting
 int sensor = A2;    
 int Vo;
@@ -28,6 +28,9 @@ const long interval = 1000;
 
 //JSON
 char buffer[96];
+
+//led
+const int led = D2;
 
 //WebServer Setting
 WebServer server(80); // Create WebServer Object, port 
@@ -102,6 +105,18 @@ void getCountJson(){
   server.send(200 , "text/Json",buffer); 
 }
 
+void handleRedledOn(){
+  Serial.println("D2 ON Call!!");
+  digitalWrite(led,HIGH);
+  server.send(200,"text/plain","LED ON!!");
+}
+
+void handleRedledOff(){
+  Serial.println("D2 OFF Call!!");
+  digitalWrite(led, LOW);
+  server.send(200,"text/plain","LED OFF!!");
+}
+
 void setup() {
 
   Serial.begin(115200); // ESP32 baud rate
@@ -120,6 +135,8 @@ void setup() {
   server.on("/", handleRootEvent); // root(/) Enter Function 
   server.on("/getTemp",getTempJson); // (/getTemp) 접속시 Json 포맷으로 온도 데이터 전송 
   server.on("/getCount",getCountJson); // (/getCount) 접속시 Json 포맷으로 카운트 값 전송 
+  server.on("/red_led_on",handleRedledOn);
+  server.on("/red_led_off",handleRedledOff);
   server.begin(); // Server Start 
   Serial.println("HTTP server started");
 
@@ -130,12 +147,19 @@ void setup() {
     Serial.print("."); 
     delay(1000); 
   }
+  Serial.println("");
+
+  //led Setting
+  pinMode(led,OUTPUT);
+  digitalWrite(led, LOW);
+
   Serial.println("");         
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   server.handleClient(); // Client session Receive
+
   if((WiFi.status()) == WL_CONNECTED){
     WiFiClient WiFiClient;
     HTTPClient httpClient; 
@@ -150,22 +174,21 @@ void loop() {
     json["temp"] = temp;
     json["count"] = count;
 
-    String paredJsonToString;
+    String parsedJsonToString;
 
-    serializeJson(json,paredJsonToString);
-    String tempString = "22222.222";
-    int httpResponseCode = httpClient.POST(paredJsonToString);
+    serializeJson(json,parsedJsonToString);
+    int httpResponseCode = httpClient.POST(parsedJsonToString);
 
     if(httpResponseCode>0){
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-
       String response = httpClient.getString();
       Serial.println(response);
     }else{
       Serial.print("Error Code: ");
       Serial.println(httpResponseCode);
     }
+
     httpClient.end();
     delay(1000);
   }

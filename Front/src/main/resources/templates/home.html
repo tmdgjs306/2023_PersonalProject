@@ -6,49 +6,7 @@
     <title>스마트 팩토리 관제 시스템</title>
     <!-- 부트스트랩 CSS 링크 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        /* 커스텀 CSS 스타일 */
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
 
-        .container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        hr {
-            border-top: 1px solid #ccc;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .login-buttons {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .login-buttons button {
-            margin: 0 5px;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -56,17 +14,18 @@
     <hr/>
     <div th:if="${nickname == null}">
         <h3>로그인 되어있지 않습니다!</h3>
-        <div class="login-buttons">
+        <div class="login-buttons text-center"> <!-- 수정된 부분: text-center 추가 -->
             <button th:onclick="|location.href='@{/{loginType}/join (loginType=${loginType})}'|">회원 가입</button>
             <button th:onclick="|location.href='@{/{loginType}/login (loginType=${loginType})}'|">로그인</button>
         </div>
     </div>
     <div th:unless="${nickname == null}">
         <h3 th:text="|${nickname} 님 환영합니다! |"></h3>
-        <div class="login-buttons">
+        <div class="login-buttons text-center">
             <button th:onclick="|location.href='@{/{loginType}/info (loginType=${loginType})}'|">유저 정보</button>
             <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button>
             <button th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃</button>
+            <button th:onclick="|location.href='@{/{loginType}/mainData (loginType=${loginType})}'|">온도 관제</button>
         </div>
     </div>
 </div>
@@ -75,5 +34,50 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    /* 커스텀 CSS 스타일 */
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    hr {
+        border-top: 1px solid #ccc;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .login-buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .login-buttons button {
+        margin: 0 10px; /* 수정된 부분: margin 조정 */
+    }
+</style>
+
 </body>
 </html>

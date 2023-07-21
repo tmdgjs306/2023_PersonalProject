@@ -1,7 +1,9 @@
 package com.example.myservice.Controller;
+import com.example.myservice.DTO.DataRepository;
 import com.example.myservice.DTO.JoinRequest;
 import com.example.myservice.DTO.LoginRequest;
 import com.example.myservice.DTO.UserService;
+import com.example.myservice.Data.TemperatureData;
 import com.example.myservice.Member.User;
 import com.example.myservice.Member.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +12,17 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 @Controller
@@ -21,7 +31,8 @@ import java.util.HashMap;
 public class SessionLoginController {
 
     private final UserService userService;
-
+    private final DataRepository dataRepository;
+    WebClient webClient;
     @GetMapping(value = {"", "/"})
     public String home(Model model, @SessionAttribute(name = "userId", required = false) Long userId) {
         model.addAttribute("loginType", "session-login");
@@ -151,6 +162,66 @@ public class SessionLoginController {
             return "redirect:/session-login";
         }
 
+        return "admin";
+    }
+    @GetMapping("/mainData")
+    public String mainDataPage(@SessionAttribute(name = "userId", required = false) Long userId, Model model){
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        User loginUser = userService.getLoginUserById(userId);
+
+        if(loginUser == null) {
+            return "redirect:/session-login/login";
+        }
+
+        return "mainData";
+    }
+    @GetMapping("/ledOn")
+    public String ledOn(@SessionAttribute(name = "userId", required = false) Long userId, Model model) throws IOException {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        User loginUser = userService.getLoginUserById(userId);
+
+        if (loginUser == null) {
+            return "redirect:/session-login";
+        }
+        if (!loginUser.getRole().equals(UserRole.ADMIN)) {
+            return "redirect:/session-login";
+        }
+        String Url = "http://165.246.116.117:80/red_led_on";
+        URL controlURL = new URL(Url);
+        HttpURLConnection conn = (HttpURLConnection) controlURL.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-Type", "text/plain");
+        System.out.println("Response code: "+conn.getResponseCode());
+        if(conn.getResponseCode() ==200){
+            System.out.println("LED ON!");
+        }
+        conn.disconnect();
+        return "admin";
+    }
+    @GetMapping("/ledOff")
+    public String ledOff(@SessionAttribute(name = "userId", required = false) Long userId, Model model) throws IOException {
+        model.addAttribute("loginType", "session-login");
+        model.addAttribute("pageName", "세션 로그인");
+        User loginUser = userService.getLoginUserById(userId);
+
+        if (loginUser == null) {
+            return "redirect:/session-login/login";
+        }
+        if (!loginUser.getRole().equals(UserRole.ADMIN)) {
+            return "redirect:/session-login/login";
+        }
+        String Url = "http://165.246.116.117:80/red_led_off";
+        URL controlURL = new URL(Url);
+        HttpURLConnection conn = (HttpURLConnection) controlURL.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-Type", "text/plain");
+        System.out.println("Response code: "+conn.getResponseCode());
+        if(conn.getResponseCode() ==200){
+            System.out.println("LED OFF!");
+        }
+        conn.disconnect();
         return "admin";
     }
 }

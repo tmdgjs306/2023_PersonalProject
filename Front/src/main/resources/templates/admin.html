@@ -7,13 +7,15 @@
 </head>
 <body>
 <div style="text-align: center; padding-top: 20px;">
-    <h1><a href="#">스마트 팩토리 관제 시스템</a></h1>
+    <h1><a href="/session-login">스마트 팩토리 관제 시스템</a></h1>
     <hr style="width: 80%; height: 2px; background-color: #007bff; border: none; margin: 15px auto;">
 </div>
 <div class="container mt-5">
     <div class="custom-form">
         <h2 class="text-center mb-4">관리자 페이지</h2>
-        <h3 class="text-center">관리자 기능 테스트!</h3>
+        <h3 class="text-center">LED 제어 콘솔 </h3>
+        <button th:onclick="|location.href='@{/{loginType}/ledOn (loginType=${loginType})}'|">RedLed ON!</button>
+        <button th:onclick="|location.href='@{/{loginType}/ledOff (loginType=${loginType})}'|">RedLed OFF!</button>
     </div>
 </div>
 </body>
