@@ -11,7 +11,7 @@
  - Front_End
    - HTML 5 
    - CSS 3
-   - thymeleaf
+   - Thymeleaf
  
  - Device 
    - Arduino ESP32 (ET Board)
