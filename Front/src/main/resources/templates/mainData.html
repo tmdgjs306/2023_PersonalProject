@@ -16,15 +16,31 @@
         <div style="text-align: left;">
             <div><span>Sensor:</span> <span id="sensor1">Loading...</span></div>
             <div><span>Value:</span> <span id="value1">Loading...</span></div>
+            <div><span>IncWeather : </span><span id="value01">Loading...</span></div>
         </div>
         <h2 class="text-center mb-4">최신 조도 데이터</h2>
         <div style="text-align: left;">
             <div><span>Sensor:</span> <span id="sensor2">Loading...</span></div>
             <div><span>Value:</span> <span id="value2">Loading...</span></div>
         </div>
+        <h2 class="text-center mb-4">최신 생산 데이터</h2>
+        <div style="text-align: left;">
+            <div><span>Sensor:</span> <span id="sensor3">Loading...</span></div>
+            <div><span>Value:</span> <span id="value3">Loading...</span></div>
+        </div>
     </div>
 </div>
-
+<script th:inline="javascript">
+    function fetchLatestTemperatureData(){
+        fetch("/session-login/getWeather")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("value01").textContent = data;
+            })
+            .catch(error => console.error('Error fetching latest temperature data:', error));
+    }
+    fetchLatestTemperatureData();
+</script>
 <script th:inline="javascript">
     function fetchLatestTemperatureData() {
         fetch("/session-login/latestTemperatureData")
@@ -47,6 +63,21 @@
             .then(data => {
                 document.getElementById("sensor2").textContent = data.sensor;
                 document.getElementById("value2").textContent = data.value;
+            })
+            .catch(error => console.error('Error fetching latest photo data:', error));
+    }
+
+    fetchLatestTemperatureData();
+    setInterval(fetchLatestTemperatureData, 3000); // 데이터 갱신 주기(3초)
+</script>
+
+<script th:inline="javascript">
+    function fetchLatestTemperatureData() {
+        fetch("/session-login/latestCountData")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("sensor3").textContent = data.sensor;
+                document.getElementById("value3").textContent = data.value;
             })
             .catch(error => console.error('Error fetching latest photo data:', error));
     }

@@ -14,7 +14,7 @@ public class TemperatureDataRequest {
 
     public TemperatureData toEntity(Double val){
         return TemperatureData.builder()
-                .sensor("TemperatureSensor")
+                .sensor("Temperature Sensor")
                 .value(val)
                 .build();
     }

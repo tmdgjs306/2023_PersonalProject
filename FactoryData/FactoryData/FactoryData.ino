@@ -11,7 +11,7 @@ const char* ssid = "KEB_INHA";
 const char* password = "inha123*";
 
 //URL Setting 
-String addDataUrl = "http://165.246.80.104:8080/session-login/addData";
+String addDataUrl = "http://165.246.80.15:8080/session-login/addData";
 
 //sensor setting
 int sensor = A2;    
@@ -19,9 +19,6 @@ int Vo;
 float R1 = 10000;
 float logR2, R2, T, Tc, Tf;
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
-
-//count setting
-int count = 0;
 
 //Time setting
 int timezone = 3; 
@@ -39,6 +36,12 @@ int photoresistor = A1;
 // 지연 효과 변수 
 unsigned long previousMillis = 0;
 const long interval = 3000; 
+
+// 초음파 센서 
+int echo_pin = D8;
+int trig_pin = D9;
+int count =0;
+int pre_time = 0;
 
 //WebServer Setting
 WebServer server(80); // Create WebServer Object, port 
@@ -171,6 +174,10 @@ void setup() {
   pinMode(led,OUTPUT);
   digitalWrite(led, LOW);
 
+  // 초음파 센서 세팅 
+  pinMode(trig_pin,OUTPUT);
+  pinMode(echo_pin,INPUT);
+
   Serial.println("");         
 }
 
@@ -178,6 +185,32 @@ void loop() {
   // put your main code here, to run repeatedly:
   server.handleClient(); // Client session Receive
   unsigned long currentMillis = millis();
+
+  // 물체가 초음파 센서를 지나면 카운트
+  long duration, distance;
+  digitalWrite(trig_pin,LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig_pin,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig_pin,LOW);
+
+  duration = pulseIn (echo_pin, HIGH);
+  distance = ((34 * duration) / 1000) / 2;
+  Serial.print("distance : ");
+  Serial.print(distance);
+  Serial.println("cm");
+
+  if(distance > 2 && distance < 8)
+  {
+    int now_time = millis();
+    if(now_time - pre_time > 500)
+    {
+      count +=1;
+      pre_time = now_time;
+      Serial.println(count);
+    }
+  }
+  delay(500);
   if(currentMillis - previousMillis >= interval){
     previousMillis = currentMillis;
   if((WiFi.status()) == WL_CONNECTED){

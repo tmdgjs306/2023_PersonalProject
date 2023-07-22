@@ -29,7 +29,7 @@ public class JoinRequest {
                 .loginId(this.loginId)
                 .password(this.password)
                 .nickname(this.nickname)
-                .role(UserRole.ADMIN)
+                .role(UserRole.USER)
                 .build();
     }
 

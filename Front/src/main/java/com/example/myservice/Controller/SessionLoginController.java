@@ -187,7 +187,7 @@ public class SessionLoginController {
         if (!loginUser.getRole().equals(UserRole.ADMIN)) {
             return "redirect:/session-login";
         }
-        String Url = "http://165.246.116.117:80/red_led_on";
+        String Url = "http://165.246.116.17:80/red_led_on";
         URL controlURL = new URL(Url);
         HttpURLConnection conn = (HttpURLConnection) controlURL.openConnection();
         conn.setRequestMethod("GET");
@@ -212,7 +212,7 @@ public class SessionLoginController {
         if (!loginUser.getRole().equals(UserRole.ADMIN)) {
             return "redirect:/session-login/login";
         }
-        String Url = "http://165.246.116.117:80/red_led_off";
+        String Url = "http://165.246.116.17:80/red_led_off";
         URL controlURL = new URL(Url);
         HttpURLConnection conn = (HttpURLConnection) controlURL.openConnection();
         conn.setRequestMethod("GET");
